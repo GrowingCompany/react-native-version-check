@@ -2,6 +2,7 @@
 import { getVersionInfo } from '../versionInfo';
 
 import { IProvider, IVersionAndStoreUrl } from './types';
+import gplay from 'google-play-scraper';
 
 export type PlayStoreGetVersionOption = {
   packageName?: string,
@@ -28,21 +29,10 @@ class PlayStoreProvider implements IProvider {
       if (!opt.packageName) {
         opt.packageName = getVersionInfo().getPackageName();
       }
-
       const storeUrl = `https://play.google.com/store/apps/details?id=${opt.packageName}&hl=en`;
-
-      return fetch(storeUrl, opt.fetchOptions)
-        .then(res => res.text())
-        .then(text => {
-          const match = text.match(/Current Version.+?>([\d.-]+)<\/span>/);
-          if (match) {
-            const latestVersion = match[1].trim();
-
-            return Promise.resolve({ version: latestVersion, storeUrl });
-          }
-
-          return Promise.reject(error(text));
-        });
+      gplay.app({ appId: opt.packageName }).then(result => {
+        return Promise.resolve({ version: result.version, storeUrl });
+      });
     } catch (e) {
       if (opt.ignoreErrors) {
         console.warn(e); // eslint-disable-line no-console
