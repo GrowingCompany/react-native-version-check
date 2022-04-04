@@ -79,5 +79,6 @@
     "setupFiles": [
       "./setupJest.js"
     ]
-  }
+  },
+  "version": "3.5.0"
 }
