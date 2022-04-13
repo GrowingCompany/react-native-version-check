@@ -1,4 +1,5 @@
 {
+  "name": "react-native-version-check",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
